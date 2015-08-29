@@ -15,30 +15,25 @@
 		<script>
 			var downKey = undefined;
 			$(document).ready(function(){
-				var meow1 = document.getElementById('meow1');
-				var meow2 = document.getElementById('meow2');
-				var meow3 = document.getElementById('meow3');
-				var meow4 = document.getElementById('meow4');
+				var audioContext = new AudioContext(),
+						nodes = {};
+				for (var i = 1; i <= 4; i++) {
+					var meowElement = document.getElementById('meow' + i);
+					var audioSource = audioContext.createMediaElementSource(meowElement);
+					var panner = audioContext.createStereoPanner();
+					var gain = audioContext.createGain();
 
-				var audioContext = new AudioContext();
-				var audioSource1 = audioContext.createMediaElementSource(meow1);
-				var audioSource2 = audioContext.createMediaElementSource(meow2);
-				var audioSource3 = audioContext.createMediaElementSource(meow3);
-				var audioSource4 = audioContext.createMediaElementSource(meow4);
+					audioSource.connect(panner);
+					panner.connect(gain);
+					gain.connect(audioContext.destination);
 
-				var panner1 = audioContext.createStereoPanner();
-				var panner2 = audioContext.createStereoPanner();
-				var panner3 = audioContext.createStereoPanner();
-				var panner4 = audioContext.createStereoPanner();
-
-				audioSource1.connect(panner1);
-				panner1.connect(audioContext.destination);
-				audioSource2.connect(panner2);
-				panner2.connect(audioContext.destination);
-				audioSource3.connect(panner3);
-				panner3.connect(audioContext.destination);
-				audioSource4.connect(panner4);
-				panner4.connect(audioContext.destination);
+					nodes['meow' + i] = {
+						domElement: meowElement,
+						audioSource: audioSource,
+						panner: panner,
+						gain: gain
+					}
+				}
 
 				var windowWidth = $(window).width();
 				var windowHeight = $(window).height();
@@ -101,42 +96,44 @@
 				function go(direction) {
 					var $cat = $('cat-container');
 					var panValue = getPanValue();
-					panner1.pan.value = panValue.x;
-					panner2.pan.value = panValue.x;
-					panner3.pan.value = panValue.x;
-					panner4.pan.value = panValue.x;
+
+					for (var i = 1; i <= 4; i++) {
+						nodes['meow' + i].panner.pan.value = panValue.x;
+						nodes['meow' + i].gain.gain.value = panValue.y;
+					}
+
 					switch(direction) {
 						case 'right':
 							$cat.css('left', currentPos()['x'] + increment + 'px');
-							meow1.play();
+							nodes.meow1.domElement.play();
 							break;
 						case 'left':
 							$cat.css('left', currentPos()['x'] - increment + 'px');
-							meow2.play();
+							nodes.meow2.domElement.play();
 							break;
 						case 'up':
 							$cat.css('top', currentPos()['y'] - increment + 'px');
-							meow3.play();
+							nodes.meow3.domElement.play();
 							break;
 						case 'down':
 							$cat.css('top', currentPos()['y'] + increment + 'px');
-							meow4.play();
+							nodes.meow4.domElement.play();
 							break;
 						case 'allTheWayLeft':
 							$cat.css('left', '0px');
-							meow2.play();
+							nodes.meow2.domElement.play();
 							break;
 						case 'allTheWayRight':
 							$cat.css('left', windowWidth - catWidth + 'px');
-							meow1.play();
+							nodes.meow1.domElement.play();
 							break;
 						case 'allTheWayUp':
 							$cat.css('top', '0px');
-							meow3.play();
+							nodes.meow3.domElement.play();
 							break;
 						case 'allTheWayDown':
 							$cat.css('top', windowHeight - catHeight + 'px');
-							meow4.play();
+							nodes.meow4.domElement.play();
 							break;
 					}
 
@@ -152,7 +149,7 @@
 							yWidth = windowHeight - catHeight;
 					return {
 						x: (pos.x / xWidth) * 2 - 1,
-						y: (pos.y / yWidth) * 2 - 1
+						y: (pos.y / yWidth) * 2
 					};
 				}
 			});
