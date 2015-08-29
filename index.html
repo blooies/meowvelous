@@ -149,7 +149,7 @@
 							yWidth = windowHeight - catHeight;
 					return {
 						x: (pos.x / xWidth) * 2 - 1,
-						y: (pos.y / yWidth) * 2
+						y: Math.min((pos.y / yWidth) * 1.8 + 0.2, 1.8)
 					};
 				}
 			});
