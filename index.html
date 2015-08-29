@@ -13,6 +13,7 @@
 		<audio id="meow3" src="sounds/meow3.ogg"></audio>
 		<audio id="meow4" src="sounds/meow4.ogg"></audio>
 		<script>
+			var downKey = undefined;
 			$(document).ready(function(){
 				var meow1 = document.getElementById('meow1');
 				var meow2 = document.getElementById('meow2');
@@ -25,21 +26,26 @@
 				var initialIncrement = increment = 15;
 				var inertiaFactor = 1;
 				$(document).keyup(function(e){
-					inertiaFactor = 1;		
+					downKey = undefined;
+					inertiaFactor = 1;
 					increment = initialIncrement;
 				});
 				$(document).keydown(function(e) {
 					if ($('code').hasClass('visible')) {
-						$('code').removeClass('visible');	
+						$('code').removeClass('visible');
 					}
-					inertiaFactor += inertiaFactor / 20;
+					if (downKey && e.which !== downKey) {
+						return;
+					}
+					downKey = e.which;
+					inertiaFactor += inertiaFactor / 15;
 					increment = inertiaFactor * increment;
 					switch(e.which) {
 						case 37: // left
 							if (currentPos()['x'] - increment >= 0) {
 								go('left');
 							} else {
-								go('allTheWayLeft');	
+								go('allTheWayLeft');
 							}
 							break;
 
@@ -47,7 +53,7 @@
 							if (currentPos()['y'] - increment >= 0) {
 								go('up');
 							} else {
-								go('allTheWayUp');	
+								go('allTheWayUp');
 							}
 							break;
 
@@ -55,7 +61,7 @@
 							if (currentPos()['x'] + increment  + catWidth <= windowWidth) {
 								go('right');
 							} else {
-								go('allTheWayRight');	
+								go('allTheWayRight');
 							}
 							break;
 
@@ -78,15 +84,15 @@
 							$cat.css('left', currentPos()['x'] + increment + 'px');
 							meow1.play();
 							break;
-						case 'left':	
+						case 'left':
 							$cat.css('left', currentPos()['x'] - increment + 'px');
 							meow2.play();
 							break;
-						case 'up':	
+						case 'up':
 							$cat.css('top', currentPos()['y'] - increment + 'px');
 							meow3.play();
 							break;
-						case 'down':	
+						case 'down':
 							$cat.css('top', currentPos()['y'] + increment + 'px');
 							meow4.play();
 							break;
@@ -107,7 +113,7 @@
 							meow4.play();
 							break;
 					}
-					
+
 				}
 				function currentPos() {
 					var x = $('cat-container').position().left;
