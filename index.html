@@ -19,6 +19,27 @@
 				var meow2 = document.getElementById('meow2');
 				var meow3 = document.getElementById('meow3');
 				var meow4 = document.getElementById('meow4');
+
+				var audioContext = new AudioContext();
+				var audioSource1 = audioContext.createMediaElementSource(meow1);
+				var audioSource2 = audioContext.createMediaElementSource(meow2);
+				var audioSource3 = audioContext.createMediaElementSource(meow3);
+				var audioSource4 = audioContext.createMediaElementSource(meow4);
+
+				var panner1 = audioContext.createStereoPanner();
+				var panner2 = audioContext.createStereoPanner();
+				var panner3 = audioContext.createStereoPanner();
+				var panner4 = audioContext.createStereoPanner();
+
+				audioSource1.connect(panner1);
+				panner1.connect(audioContext.destination);
+				audioSource2.connect(panner2);
+				panner2.connect(audioContext.destination);
+				audioSource3.connect(panner3);
+				panner3.connect(audioContext.destination);
+				audioSource4.connect(panner4);
+				panner4.connect(audioContext.destination);
+
 				var windowWidth = $(window).width();
 				var windowHeight = $(window).height();
 				var catWidth = $('cat-container').width();
@@ -79,6 +100,11 @@
 				});
 				function go(direction) {
 					var $cat = $('cat-container');
+					var panValue = getPanValue();
+					panner1.pan.value = panValue.x;
+					panner2.pan.value = panValue.x;
+					panner3.pan.value = panValue.x;
+					panner4.pan.value = panValue.x;
 					switch(direction) {
 						case 'right':
 							$cat.css('left', currentPos()['x'] + increment + 'px');
@@ -119,6 +145,15 @@
 					var x = $('cat-container').position().left;
 					var y = $('cat-container').position().top;
 					return {'x': x, 'y': y};
+				}
+				function getPanValue() {
+					var pos = currentPos();
+					var xWidth = windowWidth - catWidth,
+							yWidth = windowHeight - catHeight;
+					return {
+						x: (pos.x / xWidth) * 2 - 1,
+						y: (pos.y / yWidth) * 2 - 1
+					};
 				}
 			});
 		</script>
