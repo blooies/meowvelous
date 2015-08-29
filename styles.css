@@ -1,0 +1,58 @@
+@keyframes running-cat {
+  /* line 2, styles.scss */
+  100% {
+    -webkit-transform: translateY(-87.5%);
+  }
+}
+
+/* line 6, styles.scss */
+body {
+  background: url(img/background.jpg) no-repeat center center;
+  background-size: cover;
+  margin: 0;
+}
+
+/* line 11, styles.scss */
+cat-container {
+  width: 252.0px;
+  height: 182px;
+  overflow: hidden;
+  display: block;
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  -webkit-transition: all 100ms linear;
+}
+/* line 20, styles.scss */
+cat-container cat {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 800%;
+  background: url(img/testcat.png) no-repeat center top/100% 100%;
+  -webkit-animation: running-cat 0.75s infinite steps(7);
+}
+
+/* line 31, styles.scss */
+code {
+  font-size: 2em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 1em 0;
+  border-radius: 20px;
+  width: 300px;
+  display: block;
+  background: rgba(0, 0, 0, 0.25);
+  position: absolute;
+  top: 10%;
+  margin-left: -150px;
+  left: 50%;
+  opacity: 0;
+  -webkit-transition: opacity 0.5s;
+}
+/* line 46, styles.scss */
+code.visible {
+  opacity: 1;
+}

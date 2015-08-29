@@ -1,0 +1,120 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="styles.css" type="text/css">
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+	</head>
+	<body>
+		<code class="visible">Press the arrow keys for a meowvelous time!</code>
+		<cat-container>
+			<cat></cat>
+		</cat-container>
+		<audio id="meow1" src="sounds/meow1.ogg"></audio>
+		<audio id="meow2" src="sounds/meow2.ogg"></audio>
+		<audio id="meow3" src="sounds/meow3.ogg"></audio>
+		<audio id="meow4" src="sounds/meow4.ogg"></audio>
+		<script>
+			$(document).ready(function(){
+				var meow1 = document.getElementById('meow1');
+				var meow2 = document.getElementById('meow2');
+				var meow3 = document.getElementById('meow3');
+				var meow4 = document.getElementById('meow4');
+				var windowWidth = $(window).width();
+				var windowHeight = $(window).height();
+				var catWidth = $('cat-container').width();
+				var catHeight = $('cat-container').height();
+				var initialIncrement = increment = 15;
+				var inertiaFactor = 1;
+				$(document).keyup(function(e){
+					inertiaFactor = 1;		
+					increment = initialIncrement;
+				});
+				$(document).keydown(function(e) {
+					if ($('code').hasClass('visible')) {
+						$('code').removeClass('visible');	
+					}
+					inertiaFactor += inertiaFactor / 20;
+					increment = inertiaFactor * increment;
+					switch(e.which) {
+						case 37: // left
+							if (currentPos()['x'] - increment >= 0) {
+								go('left');
+							} else {
+								go('allTheWayLeft');	
+							}
+							break;
+
+						case 38: // up
+							if (currentPos()['y'] - increment >= 0) {
+								go('up');
+							} else {
+								go('allTheWayUp');	
+							}
+							break;
+
+						case 39: // right
+							if (currentPos()['x'] + increment  + catWidth <= windowWidth) {
+								go('right');
+							} else {
+								go('allTheWayRight');	
+							}
+							break;
+
+						case 40: // down
+							if (currentPos()['y'] + increment + catHeight <= windowHeight) {
+								go('down');
+							} else {
+								go('allTheWayDown');
+							}
+							break;
+
+						default: return; // exit this handler for other keys
+					}
+					e.preventDefault(); // prevent the default action (scroll / move caret)
+				});
+				function go(direction) {
+					var $cat = $('cat-container');
+					switch(direction) {
+						case 'right':
+							$cat.css('left', currentPos()['x'] + increment + 'px');
+							meow1.play();
+							break;
+						case 'left':	
+							$cat.css('left', currentPos()['x'] - increment + 'px');
+							meow2.play();
+							break;
+						case 'up':	
+							$cat.css('top', currentPos()['y'] - increment + 'px');
+							meow3.play();
+							break;
+						case 'down':	
+							$cat.css('top', currentPos()['y'] + increment + 'px');
+							meow4.play();
+							break;
+						case 'allTheWayLeft':
+							$cat.css('left', '0px');
+							meow2.play();
+							break;
+						case 'allTheWayRight':
+							$cat.css('left', windowWidth - catWidth + 'px');
+							meow1.play();
+							break;
+						case 'allTheWayUp':
+							$cat.css('top', '0px');
+							meow3.play();
+							break;
+						case 'allTheWayDown':
+							$cat.css('top', windowHeight - catHeight + 'px');
+							meow4.play();
+							break;
+					}
+					
+				}
+				function currentPos() {
+					var x = $('cat-container').position().left;
+					var y = $('cat-container').position().top;
+					return {'x': x, 'y': y};
+				}
+			});
+		</script>
+	</body>
+</html>
